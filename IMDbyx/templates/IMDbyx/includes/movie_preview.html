@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class='poster-filme'>
+    <a href="{% url 'movie-detail' 'forrest-gump' %}"><img src="https://m.media-amazon.com/images/M/MV5BNDYwNzVjMTItZmU5YS00YjQ5LTljYjgtMjY2NDVmYWMyNWFmXkEyXkFqcGc@._V1_SX300.jpg" alt="Movie Title"></a>
+    <div class='descricao-filme'>
+        <h1>Forrest Gump</h1>
+        <p>Esse é um filme muito legal em que coisas muito legais acontecem!</p>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Movie Name{% endblock%}
+{% block css_files %}
+    <link rel="stylesheet" href="{% static 'IMDbyx\movie.css'%}?v=123">
+{% endblock %}
+
+{% block content %} 
+    <h1>Forrest Gump</h1>
+    <section class='info-filme'>
+        <img src="https://m.media-amazon.com/images/M/MV5BNDYwNzVjMTItZmU5YS00YjQ5LTljYjgtMjY2NDVmYWMyNWFmXkEyXkFqcGc@._V1_SX300.jpg" alt="Movie Title">
+        <div class='info'>
+            <h2>Avaliações</h2>
+            <p>IMDB: 10 / outro: 10 / outro: 10</p>
+    
+            <h2>Atores:</h2>
+            <p>Tom Hanks, outros, outros</p>
+            <div class='resumo'>
+                <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Voluptates, enim molestias ea nulla error temporibus rerum voluptas laudantium, iusto nihil consectetur molestiae odit reiciendis officia, modi a. Totam, commodi molestiae?</p>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Doloribus, iure perspiciatis temporibus distinctio totam ad tempore quasi velit aut culpa reiciendis eos repudiandae accusamus esse labore nesciunt repellendus? Aspernatur, in.</p>
+                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Itaque corporis architecto, ea quis a blanditiis quas corrupti, voluptatem, nihil accusamus placeat eaque perferendis. Quidem harum fugit expedita dolores, aperiam fuga.</p>
+            </div>
+        </div>
+    </section>
+{% endblock %}
