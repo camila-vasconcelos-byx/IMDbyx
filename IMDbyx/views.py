@@ -5,6 +5,8 @@ from rest_framework import status
 import requests
 from .models import Genre, Movie, Actor, Movie_Actor
 from .serializer import GenreSerializer, MovieSerializer, ActorSerializer, Movie_ActorSerializer
+from rest_framework.pagination import PageNumberPagination
+from django.contrib import messages
 import urllib3
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -18,7 +20,6 @@ def movie_detail(request, movie):
 
 @api_view(['GET'])
 def get_api_info(request):
-    print('aqui')
     api_key = '7e12595b713f21bd5212e899661d80cf'
 
     def get_genres():
@@ -120,10 +121,22 @@ def get_api_info(request):
 
 @api_view(['GET'])
 def list_movies(request):
-    movies = Movie.objects.all()
-    serializer = MovieSerializer(movies, many=True)
+    page = request.query_params.get('page', 1)
+    print(page)
 
-    return Response({'message': 'OK', 'movies': serializer.data})
+    movies = Movie.objects.all()
+    paginator = PageNumberPagination()
+    paginator.page_size = 24
+    result = paginator.paginate_queryset(movies, request)
+    serializer = MovieSerializer(result, many=True)
+
+    return render(request, 'IMDbyx/index.html', {
+        'status': status.HTTP_200_OK,
+        'movies': serializer.data,
+        'page': paginator.page.number,
+        'total_pages': paginator.page.paginator.num_pages,
+    })
+    # return paginator.get_paginated_response({'message': 'OK', 'movies': serializer.data})
 
 @api_view(['GET'])
 def list_actors(request):
@@ -140,11 +153,21 @@ def list_cast(request):
     return Response({'message':'OK', 'cast': serializer.data})
 
 @api_view(['GET'])
+def list_genres(request):
+    genres = Genre.objects.all()
+    serializer = GenreSerializer(genres, many=True)
+
+    return Response({'message':'OK', 'genres': serializer.data})
+
+@api_view(['GET'])
 def info_movie(request, id):
     movie = Movie.objects.get(id=id)
     serializer = MovieSerializer(movie)
 
-    return Response({'message': 'OK', 'movie': serializer.data})
+    return render(request, 'IMDbyx/movie_details.html', {
+        'movie': serializer.data
+    })
+    # return Response({'message': 'OK', 'movie': serializer.data})
 
 @api_view(['GET'])
 def filter_genre(request, genre):
@@ -160,8 +183,19 @@ def filter_genre(request, genre):
     return Response({'message': 'OK', 'movies': serializer.data})
 
 @api_view(['GET'])
-def search_movies(request, movie_name):
+def search_movies(request):
+    movie_name = request.GET.get('movie', '').strip()
+    if not movie_name:
+        return Response({'message': 'You must type a movie name.'}, status.HTTP_400_BAD_REQUEST)
     movies = Movie.objects.filter(title__contains=movie_name)
     serializer = MovieSerializer(movies, many=True)
 
-    return Response({'message': 'OK', 'movies': serializer.data})
+    if movies == []:
+        messages.success(request, (f'No movie matches the search "{movie_name}".'))
+    else:
+        messages.success(request, (f'{len(movies)} results were found for the search "{movie_name}"!'))
+
+    return render(request, 'IMDbyx/index.html', {
+        'status': status.HTTP_200_OK,
+        'movies': serializer.data,
+    })

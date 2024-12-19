@@ -7,17 +7,33 @@
 {% endblock %}
 
 {% block content %}
+    {% include 'IMDbyx/includes/header.html' %}
+
+    <section class='messages'>
+        {% if messages %}
+            {% for message in messages %}
+                <h1>{{message}}</h1>
+            {% endfor %}
+        {% endif %}
+    </section>
+
     <section id='all-movies'>
-            <h1>Bem vindo(a) ao IMDbyx!</h1>
             <ul>
+                {% for movie in movies %}
                 <li> {% include 'IMDbyx/includes/movie_preview.html' %}</li>
-                <li> {% include 'IMDbyx/includes/movie_preview.html' %}</li>
-                <li> {% include 'IMDbyx/includes/movie_preview.html' %}</li>
-                <li> {% include 'IMDbyx/includes/movie_preview.html' %}</li>
-                <li> {% include 'IMDbyx/includes/movie_preview.html' %}</li>
-                <li> {% include 'IMDbyx/includes/movie_preview.html' %}</li>
-                <li> {% include 'IMDbyx/includes/movie_preview.html' %}</li>
-                <li> {% include 'IMDbyx/includes/movie_preview.html' %}</li>
+                {% endfor %}
             </ul>
     </section>
+
+    <div>
+        <span>Página {{ page }} de {{ total_pages }}</span>
+        <div>
+            {% if page > 1 %}
+            <a href="?page={{ page|add:"-1" }}">Página Anterior</a>
+            {% endif %}
+            {% if page < total_pages %}
+            <a href="?page={{ page|add:"1" }}">Próxima Página</a>
+            {% endif %}
+        </div>
+    </div>
 {% endblock %}
