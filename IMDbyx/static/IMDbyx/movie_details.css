@@ -1,0 +1,35 @@
+.all-info {
+    margin: 5rem auto;
+    width: 90%;
+    max-width: 100rem;
+}
+
+img {
+ width: 85rem;
+ height: auto;
+}
+
+.cast-info img{
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.cast-info ul {
+    list-style: none;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.cast-info li{
+    margin-right: 50px;  /* Espaço entre os itens */
+    white-space: nowrap; 
+}
+
+.overview p {
+    background-color: rgb(173, 172, 173);
+    border-radius: 10px;
+    padding: 2rem;
+}

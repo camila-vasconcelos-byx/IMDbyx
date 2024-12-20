@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Movie Details{% endblock %}
+
+{% block css_files %}
+    <link rel="stylesheet" href="{% static 'IMDbyx/movie_details.css' %}?v=123">
+{% endblock %}
+
+{% block content %}
+    {% include 'IMDbyx/includes/header.html' %}
+    <section class='all-info'>
+        <h1>{{movie.title}}</h1>
+        
+        <img src="https://image.tmdb.org/t/p/w1280{{movie.image_backdrop}}" alt="{{movie.title}}">
+        
+                <div class='overview'>
+                    <h2>Overview</h2>
+                    <p>{{movie.overview}}</p>
+                </div>
+        
+        <div class='genre-info'>
+            <h2>Genres</h2>
+            <ul>
+             {% for genre in movie.genres %}
+                 <li>{{genre.name}}</li>
+             {% endfor %}
+            </ul>
+        </div>
+
+        <div class='cast-info'>
+            <h2>Cast</h2>
+            <ul>
+                {% for actor in movie.actors %}
+                <li>
+                    <img src="https://image.tmdb.org/t/p/w185{{actor.id_actor.image_path}}" alt="{{actor.id_actor.name}}">
+                    <h3>{{actor.id_actor.name}}</h3>
+                    <p>{{actor.character}}</p>
+                </li>
+                {% endfor %}
+            </ul>
+
+        </div>
+    </section>
+{% endblock %}

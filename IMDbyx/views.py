@@ -122,7 +122,6 @@ def get_api_info(request):
 @api_view(['GET'])
 def list_movies(request):
     page = request.query_params.get('page', 1)
-    print(page)
 
     movies = Movie.objects.all()
     paginator = PageNumberPagination()
@@ -130,11 +129,17 @@ def list_movies(request):
     result = paginator.paginate_queryset(movies, request)
     serializer = MovieSerializer(result, many=True)
 
+    genres = Genre.objects.all()
+    serializer_genre = GenreSerializer(genres, many=True)
+
     return render(request, 'IMDbyx/index.html', {
         'status': status.HTTP_200_OK,
         'movies': serializer.data,
         'page': paginator.page.number,
         'total_pages': paginator.page.paginator.num_pages,
+        'search': False,
+        'genres': serializer_genre.data,
+        'selected_genres': []
     })
     # return paginator.get_paginated_response({'message': 'OK', 'movies': serializer.data})
 
@@ -170,17 +175,31 @@ def info_movie(request, id):
     # return Response({'message': 'OK', 'movie': serializer.data})
 
 @api_view(['GET'])
-def filter_genre(request, genre):
-    genre = genre.capitalize()
-    try:
-        id_genre = Genre.objects.get(name = genre).id
-    except Genre.DoesNotExist:
-        return Response({'message': 'Genre not found!'}, status.HTTP_400_BAD_REQUEST)
+def filter_genre(request):
+    genres = request.GET.getlist('genres') 
+    
+    movies = Movie.objects.all()
 
-    movies = Movie.objects.filter(genres__id = id_genre).distinct()
-    serializer = MovieSerializer(movies, many=True)
+    if genres:
+        for genre in genres:
+            movies = movies.filter(genres__id = genre)
+    
+    paginator = PageNumberPagination()
+    paginator.page_size = 24
+    result = paginator.paginate_queryset(movies, request)
+    serializer = MovieSerializer(result, many=True)
 
-    return Response({'message': 'OK', 'movies': serializer.data})
+    return render(request, 'IMDbyx/index.html', {
+        'movies': serializer.data,
+        'search': False,
+        'genres': GenreSerializer(Genre.objects.all(), many=True).data,
+        'selected_genres': [int(id) for id in genres],
+        'status': status.HTTP_200_OK,
+        'page': paginator.page.number,
+        'total_pages': paginator.page.paginator.num_pages,
+    })
+
+    return Response({'message': 'OK', 'len': len(movies), 'movies': serializer.data})
 
 @api_view(['GET'])
 def search_movies(request):
@@ -198,4 +217,5 @@ def search_movies(request):
     return render(request, 'IMDbyx/index.html', {
         'status': status.HTTP_200_OK,
         'movies': serializer.data,
+        'search': True,
     })

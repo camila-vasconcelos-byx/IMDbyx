@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
 
@@ -25,3 +26,11 @@ class Movie_Actor(models.Model):
     id_movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
     id_actor = models.ForeignKey(Actor, on_delete=models.CASCADE)
     character = models.CharField(max_length=100)
+
+class CustomUser(AbstractUser):
+    name = models.CharField(max_length=150)
+    email = models.EmailField(unique=True)
+    birth_date = models.DateField()
+    favorite_movies = models.ManyToManyField(Movie, related_name='favorite_movies')
+    watch_list = models.ManyToManyField(Movie, related_name='watch_list')
+    

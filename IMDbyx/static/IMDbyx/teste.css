@@ -1,0 +1,64 @@
+/* #main-navigation {
+    height: 0.5rem;
+    display: flex;
+    gap: 50px;
+    align-items: center;
+    position: relative;
+    top: 0;
+    left: 0; 
+    margin: 5rem auto;
+    width: 90%;
+    max-width: 100rem;
+    padding: 1rem;
+    border-bottom: 2px solid #ffffff;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 6px rgba(255, 255, 255, 0.1);
+} */
+
+#main-navigation, .nav-box {
+    height: 8rem;               /* Ajuste a altura para garantir que o cabeçalho tenha espaço suficiente */
+    display: flex;
+    gap: 50px;                  /* Espaçamento entre os itens */
+    align-items: center;        /* Alinha os itens verticalmente ao centro */
+    position: relative;
+    top: 0;
+    left: 0;
+    margin: 0 auto;             /* Ajusta o espaço de margem, removendo o '5rem' que pode estar deslocando o layout */
+    width: 90%;
+    max-width: 100rem;
+    padding: 0 1rem;            /* Ajusta o padding, removendo o 1rem superior e inferior, caso o problema esteja no espaçamento extra */
+    border-bottom: 2px solid #ffffff;
+    box-shadow: 0 4px 6px rgba(255, 255, 255, 0.1);
+    justify-content: space-between;
+}
+
+#main-navigation a {
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+}
+
+#main-navigation a:hover,
+#main-navigation a:active {
+    color: #ff5aff;
+}
+
+#main-navigation h1 a:hover,
+#main-navigation h1 a:active {
+    color:white;
+}
+
+.search-container input {
+    width: 100%; 
+    max-width: 600px; 
+    height: 25px; 
+    font-size: 18px; 
+    padding: 10px;
+    border-radius: 8px; 
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 5px rgba(255, 255, 255, 0.1);
+}
+
+.nav-box {
+    display: flex;
+}

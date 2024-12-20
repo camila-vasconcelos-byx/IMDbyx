@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'IMDbyx',
-    'rest_framework'
+    'rest_framework',
+    'users'
 ]
 
 MIDDLEWARE = [
@@ -134,3 +135,5 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 30
 }
+
+AUTH_USER_MODEL = 'IMDbyx.CustomUser'

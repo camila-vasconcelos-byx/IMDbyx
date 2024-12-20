@@ -33,3 +33,41 @@ ul {
     filter: grayscale(50%);
     opacity: 20%;
   }
+
+  .custom-checkbox {
+    display: inline-block;
+    position: relative;
+    padding-left: 30px;
+    cursor: pointer;
+    font-size: 16px;
+    color: black;
+}
+
+.filter-genres {
+  margin: 3rem;
+}
+
+.custom-checkbox input[type="checkbox"] {
+    position: absolute;
+    opacity: 0; /* Esconde o checkbox padrão */
+    cursor: pointer;
+}
+
+.custom-checkbox span {
+    display: inline-block;
+    width: 100px; /* Tamanho do "checkbox" */
+    height: 30px;
+    line-height: 30px; /* Centraliza o texto verticalmente */
+    text-align: center; /* Centraliza o texto horizontalmente */
+    background-color: #e0e0e0;
+    border: 2px solid #ccc;
+    border-radius: 5px; /* Deixa as bordas arredondadas */
+    transition: all 0.3s ease;
+    margin-bottom: 20px;
+}
+
+.custom-checkbox input[type="checkbox"]:checked + span {
+    background-color: #ee5de5; /* Cor quando selecionado */
+    color: #fff; /* Cor do texto */
+    border-color: #ee5de5;
+}

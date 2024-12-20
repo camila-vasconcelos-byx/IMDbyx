@@ -17,6 +17,21 @@
         {% endif %}
     </section>
 
+    <section class='filter-genres'>
+        {% if not search %}
+        <form action="{% url 'filter-genre' %}" method='get'>
+            {% for genre in genres %}
+            <label class="custom-checkbox">
+                <input type="checkbox" name="genres" value="{{ genre.id }}"  {% if genre.id in selected_genres %}checked{% endif %}>
+                <span>{{ genre.name }}</span>
+            </label>
+            {% endfor %}
+            <button type="submit">Filtrar</button>
+        </form>
+
+        {% endif %}
+    </section>
+
     <section id='all-movies'>
             <ul>
                 {% for movie in movies %}
