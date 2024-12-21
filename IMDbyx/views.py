@@ -9,15 +9,10 @@ from .serializer import GenreSerializer, MovieSerializer, ActorSerializer, Movie
 from rest_framework.pagination import PageNumberPagination
 from django.contrib import messages
 import urllib3
+from django.http import Http404
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 # Create your views here.
-
-def index(request):
-    return render(request, 'IMDbyx/index.html')
-
-def movie_detail(request, movie):
-    return render(request, 'IMDbyx/movie.html')
 
 @api_view(['GET'])
 def get_api_info(request):
@@ -167,13 +162,12 @@ def list_genres(request):
 
 @api_view(['GET'])
 def info_movie(request, id):
-    movie = Movie.objects.get(id=id)
+    movie = get_object_or_404(Movie, id=id)
     serializer = MovieSerializer(movie)
 
     return render(request, 'IMDbyx/movie_details.html', {
         'movie': serializer.data
     })
-    # return Response({'message': 'OK', 'movie': serializer.data})
 
 @api_view(['GET'])
 def filter_genre(request):
@@ -186,7 +180,7 @@ def filter_genre(request):
             movies = movies.filter(genres__id = genre)
 
     if not len(movies):
-        messages.success(request, ('No movies match the genrer id specified.'))
+        messages.success(request, ('No movies match the genre id specified.'))
         return redirect('list-movies')
            
     paginator = PageNumberPagination()
@@ -213,8 +207,9 @@ def search_movies(request):
     movies = Movie.objects.filter(title__contains=movie_name)
     serializer = MovieSerializer(movies, many=True)
 
-    if movies == []:
+    if len(movies) == 0:
         messages.success(request, (f'No movie matches the search "{movie_name}".'))
+        return redirect('list-movies')
     else:
         messages.success(request, (f'{len(movies)} results were found for the search "{movie_name}"!'))
 
@@ -226,7 +221,7 @@ def search_movies(request):
 
 @login_required
 def add_to_favorites(request, id):
-    movie = get_object_or_404(Movie, id=id)
+    movie = get_object_or_404(Movie, id=id) 
     user = request.user
 
     if user.favorite_movies.filter(id = id).exists():
