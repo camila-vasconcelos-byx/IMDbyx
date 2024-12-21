@@ -85,6 +85,17 @@ DATABASES = {
     }
 }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'IMDbyx',
+#         'USER': 'postgres',
+#         'PASSWORD': 'amylindo',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -137,3 +148,5 @@ REST_FRAMEWORK = {
 }
 
 AUTH_USER_MODEL = 'IMDbyx.CustomUser'
+
+LOGIN_URL = '/user/login'

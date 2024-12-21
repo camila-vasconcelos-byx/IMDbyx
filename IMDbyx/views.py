@@ -1,9 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from rest_framework.decorators import api_view
+from django.contrib.auth.decorators import login_required
 from rest_framework.response import Response
 from rest_framework import status
 import requests
-from .models import Genre, Movie, Actor, Movie_Actor
+from .models import Genre, Movie, Actor, Movie_Actor, CustomUser
 from .serializer import GenreSerializer, MovieSerializer, ActorSerializer, Movie_ActorSerializer
 from rest_framework.pagination import PageNumberPagination
 from django.contrib import messages
@@ -78,7 +79,7 @@ def get_api_info(request):
 
     url = 'https://api.themoviedb.org/3/discover/movie'
 
-    for i in range(1, 5):
+    for i in range(1, 100):
         print(i)
         params = {
                 "api_key": api_key,
@@ -218,4 +219,24 @@ def search_movies(request):
         'status': status.HTTP_200_OK,
         'movies': serializer.data,
         'search': True,
+    })
+
+@login_required
+def add_to_favorites(request, id):
+    movie = get_object_or_404(Movie, id=id)
+    user = request.user
+
+    user.favorite_movies.add(movie)
+
+    messages.success(request, ('Movie added to favorites!'))
+    return redirect('list-movies')
+
+@login_required
+def view_favorites(request):
+    user = request.user
+    
+    movies = user.favorite_movies.all()
+
+    return render(request, 'IMDbyx/favorite_movies.html', {
+        'movies': movies
     })

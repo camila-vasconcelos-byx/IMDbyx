@@ -13,15 +13,28 @@
 </head>
 <body class='body-login'>
   {% include 'IMDbyx/includes/header.html' %}
+
+  {% if messages %}
+  {% for message in messages %}
+  <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            {{message}}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          {% endfor %}
+   {% endif %}
+
   <div class='content'>
-    <form class='form-login'>
+    <form class='form-login' method=POST>
+      {% csrf_token %}
         <h3>Login Here</h3>
   
-        <label for="username">Username</label>
-        <input type="text" placeholder="Email or Phone" id="username">
+        <label for="email">Email</label>
+        <input type="text" placeholder="Email" name='email'>
   
         <label for="password">Password</label>
-        <input type="password" placeholder="Password" id="password">
+        <input type="password" placeholder="Password" name='password'>
   
         <button>Log In</button>
     </form>

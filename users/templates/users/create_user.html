@@ -14,20 +14,29 @@
 <body class='body-login'>
   {% include 'IMDbyx/includes/header.html' %}
   <div class='content'>
-    <form class='form-login'>
+    <form class='form-login' method=POST>
+       {% csrf_token %}
         <h3>Create Account</h3>
 
         <label for="name">Name</label>
-        <input type="text" placeholder="Name" id="name">
+        <input type="text" placeholder="Name" name="name">
   
         <label for="email">Email</label>
-        <input type="text" placeholder="Email" id="email">
+        <input type="text" placeholder="Email" name="email">
   
         <label for="password">Password</label>
-        <input type="password" placeholder="Password" id="password">
+        <input type="password" placeholder="Password" name="password">
   
         <button>Create Account</button>
     </form>
+
+    {% if form.errors %}
+        <ul>
+            {% for field, errors in form.errors.items %}
+                <li>{{ field }}: {{ errors|join:", " }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 
   </div>
 </body>

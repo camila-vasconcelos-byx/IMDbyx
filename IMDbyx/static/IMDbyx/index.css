@@ -71,3 +71,14 @@ ul {
     color: #fff; /* Cor do texto */
     border-color: #ee5de5;
 }
+
+.favorite-movies {
+  background-color: #ee5de5;
+  color: white;
+  border-radius: 20px;
+  padding: 0.2rem;
+  width: fit-content; /* A div se ajusta ao conteúdo */
+  margin: 0 auto; /* Centraliza a div horizontalmente */
+  text-align: center; /* Centraliza o conteúdo dentro da div */
+  margin-top: 2rem;
+}

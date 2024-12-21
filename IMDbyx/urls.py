@@ -11,5 +11,7 @@ urlpatterns = [
     path('movie-details/<id>', views.info_movie, name='movie-details'),
     path('genre', views.filter_genre, name='filter-genre'),
     path('search', views.search_movies, name='search-movies'),
+    path('add-to-favorites/<id>', views.add_to_favorites, name='add-to-favorites'),
+    path('view-favorites', views.view_favorites, name='view-favorites')
     # path('<movie>', views.movie_detail, name='movie-detail'),
 ]

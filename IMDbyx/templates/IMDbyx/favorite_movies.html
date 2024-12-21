@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Favorite Movies{% endblock %}
+
+{% block css_files %}
+    <link rel="stylesheet" href="{% static 'IMDbyx/index.css' %}?v=123">
+{% endblock %}
+
+{% block content %}
+    {% include 'IMDbyx/includes/header.html' %}
+
+    <div class='favorite-movies'>
+        <h1>{{user.name}}'s Favorite Movies</h1>
+    </div>
+
+    <section id='all-movies'>
+        <ul>
+            {% for movie in movies %}
+            <li> {% include 'IMDbyx/includes/movie_preview.html' %}</li>
+            {% endfor %}
+        </ul>
+    </section>
+
+    <div>
+        <span>Página {{ page }} de {{ total_pages }}</span>
+        <div>
+            {% if page > 1 %}
+            <a href="?page={{ page|add:"-1" }}">Página Anterior</a>
+            {% endif %}
+            {% if page < total_pages %}
+            <a href="?page={{ page|add:"1" }}">Próxima Página</a>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

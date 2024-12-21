@@ -15,9 +15,20 @@
                 <button type="submit">Buscar</button>
             </form>
         </div>
+        <div class='user-info'>
+            {% if user.is_authenticated %}
+            <a href="{% url 'view-favorites' %}">Favorites</a>
+            {% endif %}
+
+        </div>
         <div class='login'>
+            {% if user.is_authenticated %}
+            <h2>Welcome, {{user.name}} </h2>
+            <a href="{% url 'logout-user' %}">Logout</a>
+            {% else %}
             <a href="{% url 'user-login' %}">Login</a>
             <a href="{% url 'create-user' %}">Create Account</a>
+            {% endif %}
         </div>
     </nav>
 </header>
