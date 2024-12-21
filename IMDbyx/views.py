@@ -184,7 +184,11 @@ def filter_genre(request):
     if genres:
         for genre in genres:
             movies = movies.filter(genres__id = genre)
-    
+
+    if not len(movies):
+        messages.success(request, ('No movies match the genrer id specified.'))
+        return redirect('list-movies')
+           
     paginator = PageNumberPagination()
     paginator.page_size = 24
     result = paginator.paginate_queryset(movies, request)
@@ -200,13 +204,12 @@ def filter_genre(request):
         'total_pages': paginator.page.paginator.num_pages,
     })
 
-    return Response({'message': 'OK', 'len': len(movies), 'movies': serializer.data})
-
 @api_view(['GET'])
 def search_movies(request):
     movie_name = request.GET.get('movie', '').strip()
     if not movie_name:
-        return Response({'message': 'You must type a movie name.'}, status.HTTP_400_BAD_REQUEST)
+        messages.success(request, ('You must type a movie title.'))
+        return redirect('list-movies')
     movies = Movie.objects.filter(title__contains=movie_name)
     serializer = MovieSerializer(movies, many=True)
 
@@ -226,9 +229,12 @@ def add_to_favorites(request, id):
     movie = get_object_or_404(Movie, id=id)
     user = request.user
 
-    user.favorite_movies.add(movie)
+    if user.favorite_movies.filter(id = id).exists():
+        messages.success(request, ('This movie has already been added to your favorites!'))
+    else:
+        user.favorite_movies.add(movie)
+        messages.success(request, ('Movie added to favorites!'))
 
-    messages.success(request, ('Movie added to favorites!'))
     return redirect('list-movies')
 
 @login_required

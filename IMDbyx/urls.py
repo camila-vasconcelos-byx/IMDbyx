@@ -2,9 +2,8 @@ from django.urls import path
 from . import views 
 
 urlpatterns = [
-    path('', views.list_movies, name='index'),
-    path('update-bd', views.get_api_info, name='get-api-info'),
     path('', views.list_movies, name='list-movies'),
+    path('update-bd', views.get_api_info, name='get-api-info'),
     path('list-actors', views.list_actors, name='list-actors'),
     path('list-cast', views.list_cast, name='list-cast'),
     path('list-genres', views.list_genres, name='list-genres'),
