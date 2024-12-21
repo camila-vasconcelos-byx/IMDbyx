@@ -165,19 +165,30 @@ def info_movie(request, id):
     movie = get_object_or_404(Movie, id=id)
     serializer = MovieSerializer(movie)
 
+    year = movie.release_date.year
+
     return render(request, 'IMDbyx/movie_details.html', {
-        'movie': serializer.data
+        'movie': serializer.data,
+        'year': year
     })
 
 @api_view(['GET'])
 def filter_genre(request):
     genres = request.GET.getlist('genres') 
+
+    year = request.GET.get('year')
+    actor = request.GET.get('actor')
     
     movies = Movie.objects.all()
 
     if genres:
         for genre in genres:
             movies = movies.filter(genres__id = genre)
+    if year:
+        movies = movies.filter(release_date__year = int(year))
+    
+    if actor:
+        movies = movies.filter(actors__name__icontains=actor)
 
     if not len(movies):
         messages.success(request, ('No movies match the genre id specified.'))

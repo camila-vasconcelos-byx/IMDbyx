@@ -53,6 +53,12 @@ ul {
     cursor: pointer;
 }
 
+.custom-checkbox span:hover, .custom-checkbox span:active {
+  background-color:#ee5de5 ;
+  border-color:  #ee5de5;
+  color: white;
+}
+
 .custom-checkbox span {
     display: inline-block;
     width: 100px; /* Tamanho do "checkbox" */
@@ -82,3 +88,76 @@ ul {
   text-align: center; /* Centraliza o conteúdo dentro da div */
   margin-top: 2rem;
 }
+
+.advanced-filter {
+  display: flex; /* Alinha os itens lado a lado */
+  justify-content: space-between; /* Adiciona espaço entre os campos */
+  gap: 20px; /* Adiciona um espaço de 20px entre os elementos */
+  width: 100%;
+  max-width: 600px; /* Limita a largura máxima */
+  /* margin: 0 auto; Centraliza o formulário */
+  padding: 1rem;
+  /* position: relative;
+  right: 19%; */
+}
+
+.advanced-filter label {
+  display: block; /* Faz com que o label ocupe toda a largura disponível */
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.advanced-filter input[type="text"] {
+  width: 100%; /* Faz o campo de entrada ocupar toda a largura disponível no flexbox */
+  padding: 0.8rem; /* Aumenta o preenchimento interno do campo */
+  font-size: 1rem; /* Tamanho da fonte */
+  border: 1px solid #ccc; /* Borda simples */
+  border-radius: 5px; /* Bordas arredondadas */
+  background-color: #e0e0e0;
+}
+
+.advanced-filter input[type="text"]:focus {
+  border-color:  #ee5de5; /* Muda a cor da borda ao focar no campo */
+  outline: none;
+  border-width: 0.8;
+}
+
+.pink-box h3 {
+  border: 3px solid #ee5de5; /* Borda rosa de 2px */
+  padding: 10px; /* Adiciona espaçamento interno */
+  border-radius: 5px; /* Borda arredondada (opcional) */
+  display: inline-block; /* Faz com que o contêiner ocupe apenas o espaço necessário */
+  background-color: transparent; /* Garante que o fundo fique transparente */
+  position: relative;
+  left: 2%;
+  font-size: 15px;
+}
+
+.filter-genres button {
+  color: black; /* Cor do texto */
+  font-size: 16px; /* Tamanho da fonte */
+  padding: 12px 20px; /* Espaçamento interno (topo/baixo e esquerda/direita) */
+  border-radius: 30px; /* Borda arredondada */
+  border: none; /* Remove a borda padrão */
+  cursor: pointer; /* Muda o cursor para mão ao passar o mouse sobre o botão */
+  transition: background-color 0.3s ease, transform 0.2s ease; /* Animações suaves */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
+  display: block; /* Faz o botão ser tratado como bloco */
+  margin-left: auto; /* Alinha o botão à esquerda */
+  margin-right: auto; /* Alinha o botão à direita */
+}
+
+/* Efeito quando o botão é clicado */
+.filter-genres button:active {
+  transform: scale(0.98); /* Efeito de "diminuir" o botão quando pressionado */
+}
+
+/* Efeito quando o botão é focado ou quando o mouse passa por cima */
+.filter-genres button:hover {
+  background-color: #ee5de5; /* Cor de fundo do botão em hover */
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2); /* Sombra mais forte quando o botão é hover */
+  color:white;
+}
+
+
+

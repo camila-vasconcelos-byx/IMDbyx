@@ -25,7 +25,18 @@
                 <span>{{ genre.name }}</span>
             </label>
             {% endfor %}
-            <button type="submit">Filtrar</button>
+            <div class='pink-box'>
+                <h3>Advanced Filters</h3>
+            </div>
+                <div class='advanced-filter'>
+                <label for="actor">Actor</label>
+                <input type="text" placeholder='Actor Name' name='actor'>
+    
+                <label for="year">Year</label>
+                <input type="text" placeholder='Year Of Release', name='year'>
+                
+            </div>
+            <button type="submit">Filter</button>
         </form>
 
         {% endif %}

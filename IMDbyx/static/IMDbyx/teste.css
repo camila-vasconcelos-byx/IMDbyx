@@ -62,3 +62,28 @@
 .nav-box {
     display: flex;
 }
+
+/* Estilo do botão de pesquisa */
+.search-container button {
+    padding: 5px 10px; /* Espaçamento interno */
+    font-size: 16px; /* Tamanho da fonte */
+    background-color: #f7a5f1;
+    color: black; /* Cor do texto */
+    border: none; /* Remove a borda padrão */
+    border-radius: 5px; /* Borda arredondada */
+    cursor: pointer; /* Muda o cursor para indicar interatividade */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Efeitos de transição */
+    margin-left: 10px; /* Adiciona espaço à esquerda do botão */
+    margin-top: 4px;
+}
+
+/* Efeito ao passar o mouse sobre o botão */
+.search-container button:hover {
+    background-color: #ee5de5;
+    color: white; /* Cor mais intensa quando o mouse passa por cima */
+}
+
+/* Efeito ao clicar no botão */
+.search-container button:active {
+    transform: scale(0.98); /* Efeito de "diminuir" o botão ao clicar */
+}

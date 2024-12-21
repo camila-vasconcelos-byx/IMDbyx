@@ -10,7 +10,7 @@
 {% block content %}
     {% include 'IMDbyx/includes/header.html' %}
     <section class='all-info'>
-        <h1>{{movie.title}}</h1>
+        <h1>{{movie.title}} ({{ year }})</h1>
         <a href="{% url 'add-to-favorites' movie.id %}">
             <button>Add to Favorites</button>
          </a>
