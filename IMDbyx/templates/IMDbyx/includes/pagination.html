@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css_files %}
+<link rel="stylesheet" href="{% static 'IMDbyx/pagination.css' %}?v=123">
+{% endblock %}
+
+
+{% block content %}
+<div class="container">
+    <ul class="pagination">
+        <li>
+            {% if page > 1 %}
+            <a href="?page={{ page|add:"-1" }}">Prev</a>
+            {% endif %}
+        </li>
+        <li class="active">
+            <a href="?page={{ page }}">{{ page }}</a>
+        </li>
+        <li>
+            {% if page < total_pages %}
+            <a href="?page={{ page|add:"1" }}">Next</a>
+            {% endif %}
+        </li>
+    </ul>
+</div>
+
+{% endblock %}

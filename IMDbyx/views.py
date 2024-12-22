@@ -117,8 +117,6 @@ def get_api_info(request):
 
 @api_view(['GET'])
 def list_movies(request):
-    page = request.query_params.get('page', 1)
-
     movies = Movie.objects.all()
     paginator = PageNumberPagination()
     paginator.page_size = 24
@@ -137,7 +135,6 @@ def list_movies(request):
         'genres': serializer_genre.data,
         'selected_genres': []
     })
-    # return paginator.get_paginated_response({'message': 'OK', 'movies': serializer.data})
 
 @api_view(['GET'])
 def list_actors(request):
@@ -222,11 +219,17 @@ def filter_genre(request):
 @api_view(['GET'])
 def search_movies(request):
     movie_name = request.GET.get('movie', '').strip()
+
     if not movie_name:
         messages.success(request, ('You must type a movie title.'))
         return redirect('list-movies')
+    
     movies = Movie.objects.filter(title__contains=movie_name)
-    serializer = MovieSerializer(movies, many=True)
+
+    paginator = PageNumberPagination()
+    paginator.page_size = 24
+    result = paginator.paginate_queryset(movies, request)
+    serializer = MovieSerializer(result, many=True)
 
     if len(movies) == 0:
         messages.success(request, (f'No movie matches the search "{movie_name}".'))
@@ -238,6 +241,8 @@ def search_movies(request):
         'status': status.HTTP_200_OK,
         'movies': serializer.data,
         'search': True,
+        'page': paginator.page.number,
+        'total_pages': paginator.page.paginator.num_pages,
     })
 
 @login_required
@@ -257,16 +262,24 @@ def add_to_favorites(request, id):
     return redirect('movie-details', id=id)
 
 @login_required
+@api_view(['GET'])
 def view_favorites(request):
     user = request.user
     
     movies = user.favorite_movies.all()
 
+    paginator = PageNumberPagination()
+    paginator.page_size = 24
+    result = paginator.paginate_queryset(movies, request)
+    serializer = MovieSerializer(result, many=True)
+
     sentence = f"{user.name}'s Favorite Movies"
 
     return render(request, 'IMDbyx/favorite_movies.html', {
-        'movies': movies,
-        'sentence': sentence
+        'movies': serializer.data,
+        'sentence': sentence,
+        'page': paginator.page.number,
+        'total_pages': paginator.page.paginator.num_pages,
     })
 
 @login_required
@@ -292,17 +305,25 @@ def add_to_watchlist(request, id):
     return redirect('movie-details', id=id)
 
 @login_required
+@api_view(['GET'])
 def view_watchlist(request):
     user = request.user
     
     movies = user.watch_list.all()
 
+    paginator = PageNumberPagination()
+    paginator.page_size = 24
+    result = paginator.paginate_queryset(movies, request)
+    serializer = MovieSerializer(result, many=True)
+
     sentence = f"{user.name}'s Watchlist"
 
     return render(request, 'IMDbyx/favorite_movies.html', {
-        'movies': movies,
-        'sentence': sentence
-    })
+            'movies': serializer.data,
+            'sentence': sentence,
+            'page': paginator.page.number,
+            'total_pages': paginator.page.paginator.num_pages,
+        })
 
 @login_required
 def remove_watchlist(request, id):

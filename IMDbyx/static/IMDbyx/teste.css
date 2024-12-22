@@ -87,3 +87,8 @@
 .search-container button:active {
     transform: scale(0.98); /* Efeito de "diminuir" o botão ao clicar */
 }
+
+.user-info {
+    display: flex;
+    gap: 20px;
+}
