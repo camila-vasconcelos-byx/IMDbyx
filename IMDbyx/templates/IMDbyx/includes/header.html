@@ -7,14 +7,31 @@
 
 {% block content %}
 <header id='main-navigation'>
+    {% if request.session.page_choice == 'actors' %}
+    <h1><a href="{% url 'list-actors' %}">IMDbyx</a></h1>
+    {% else %}
     <h1><a href="{% url 'list-movies' %}">IMDbyx</a></h1>
+    {% endif %}
+
     <nav class='nav-box'>
+        {% if request.session.page_choice == 'actors' %}
         <div class="search-container">
-            <form action="{% url 'search-movies' %}" method=GET>
-                <input type="text" id="search" name="movie" placeholder="Search for a movie...">
+            <form action="{% url 'search-actors' %}" method=GET>
+                <input type="text" id="search" name="actor" placeholder="Search for an actor...">
                 <button type="submit">Search</button>
             </form>
         </div>
+            <a href="{% url 'set-choice' 'movies' %}">Movies Page</a>
+            {% else %}
+            <div class='search-container'>
+                <form action="{% url 'search-movies' %}" method=GET>
+                    <input type="text" id="search" name="movie" placeholder="Search for a movie...">
+                    <button type="submit">Search</button>
+                </form>
+            </div>
+            <a href="{% url 'set-choice' 'actors' %}">Actors Page</a>
+            
+            {% endif %}
         <div class='user-info'>
             {% if user.is_authenticated %}
             <a href="{% url 'view-favorites' %}">Favorites</a>

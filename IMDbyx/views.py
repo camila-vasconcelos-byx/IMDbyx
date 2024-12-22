@@ -138,9 +138,17 @@ def list_movies(request):
 @api_view(['GET'])
 def list_actors(request):
     actors = Actor.objects.all()
-    serializer = ActorSerializer(actors, many=True)
 
-    return Response({'message':'OK', 'actors': serializer.data})
+    paginator = PageNumberPagination()
+    paginator.page_size = 24
+    result = paginator.paginate_queryset(actors, request)
+    serializer = ActorSerializer(result, many=True)
+
+    return render(request, 'IMDbyx/list_actors.html', {
+        'actors': serializer.data,
+        'page': paginator.page.number,
+        'total_pages': paginator.page.paginator.num_pages,
+    })
 
 @api_view(['GET'])
 def list_cast(request):
@@ -225,16 +233,16 @@ def search_movies(request):
     
     movies = Movie.objects.filter(title__contains=movie_name)
 
-    paginator = PageNumberPagination()
-    paginator.page_size = 24
-    result = paginator.paginate_queryset(movies, request)
-    serializer = MovieSerializer(result, many=True)
-
     if len(movies) == 0:
         messages.success(request, (f'No movie matches the search "{movie_name}".'))
         return redirect('list-movies')
     else:
         messages.success(request, (f'{len(movies)} results were found for the search "{movie_name}"!'))
+
+    paginator = PageNumberPagination()
+    paginator.page_size = 24
+    result = paginator.paginate_queryset(movies, request)
+    serializer = MovieSerializer(result, many=True)
 
     return render(request, 'IMDbyx/index.html', {
         'status': status.HTTP_200_OK,
@@ -345,3 +353,38 @@ def actor_details(request, id):
         'actor': actor_serializer.data,
         'movies': serializer.data
     })
+
+@api_view(['GET'])
+def search_actors(request): 
+    actor_name = request.GET.get('actor', '').strip()
+
+    if not actor_name:
+        messages.success(request, ('You must type an actor name.'))
+        return redirect('list-actors')
+    
+    actors = Actor.objects.filter(name__icontains = actor_name)
+
+    if len(actors) == 0:
+        messages.success(request, (f'No actor matches the search "{actor_name}".'))
+        return redirect('list-actors')
+    else:
+        messages.success(request, (f'{len(actors)} results were found for the search "{actor_name}"!'))
+
+    paginator = PageNumberPagination()
+    paginator.page_size = 24
+    result = paginator.paginate_queryset(actors, request)
+    serializer = ActorSerializer(result, many=True)
+
+    return render(request, 'IMDbyx/list_actors.html', {
+        'actors': serializer.data,
+        'page': paginator.page.number,
+        'total_pages': paginator.page.paginator.num_pages,
+    })
+
+def set_page_choice(request, choice):
+    if choice in ['movies', 'actors']:  
+        request.session['page_choice'] = choice 
+    
+    if choice == 'actors':
+        return redirect('list-actors')
+    return redirect('list-movies')

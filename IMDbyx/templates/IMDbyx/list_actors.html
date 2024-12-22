@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %} 
+
+{% block title %}All Actors{% endblock %}
+
+{% block css_files %}
+<link rel="stylesheet" href="{% static 'IMDbyx/index.css' %}?v=123">
+{% endblock %}
+
+{% block content %}
+{% include 'IMDbyx/includes/header.html' %}
+
+<section class='messages'>
+    {% if messages %}
+        {% for message in messages %}
+            <h1>{{message}}</h1>
+        {% endfor %}
+    {% endif %}
+</section>
+
+<section id='all-movies'>
+    <ul>
+        {% for actor in actors %}
+        <li> {% include 'IMDbyx/includes/actor_preview.html' %}</li>
+        {% endfor %}
+    </ul>
+</section>
+
+{% include 'IMDbyx/includes/pagination.html' %}
+{% endblock %}

@@ -17,4 +17,6 @@ urlpatterns = [
     path('view-watchlist', views.view_watchlist, name='view-watchlist'),
     path('remove-from-watchlist/<id>', views.remove_watchlist, name='remove-from-watchlist'),
     path('actor-details/<id>', views.actor_details, name='actor-details'),
+    path('search-actors', views.search_actors, name='search-actors'),
+    path('set-choice/<str:choice>', views.set_page_choice, name='set-choice'),
 ]

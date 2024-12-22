@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class='poster-filme'>
+    <a href="{% url 'actor-details' actor.id %}"><img src='https://image.tmdb.org/t/p/w185{{actor.image_path}}' alt="{{actor.name}}"></a>
+    <div class='descricao-filme'>
+        <h1>{{actor.name}}</h1>
+    </div>
+</div>
+{% endblock %}
