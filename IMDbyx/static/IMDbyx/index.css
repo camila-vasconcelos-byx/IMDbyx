@@ -137,7 +137,7 @@ ul {
   color: black; /* Cor do texto */
   font-size: 16px; /* Tamanho da fonte */
   padding: 12px 20px; /* Espaçamento interno (topo/baixo e esquerda/direita) */
-  border-radius: 30px; /* Borda arredondada */
+  border-radius: 12px; /* Borda arredondada */
   border: none; /* Remove a borda padrão */
   cursor: pointer; /* Muda o cursor para mão ao passar o mouse sobre o botão */
   transition: background-color 0.3s ease, transform 0.2s ease; /* Animações suaves */

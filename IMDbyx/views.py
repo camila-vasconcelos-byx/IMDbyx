@@ -167,9 +167,19 @@ def info_movie(request, id):
 
     year = movie.release_date.year
 
+    user = request.user
+    is_favorite = False
+    is_watchlist = False
+
+    if user.is_authenticated:
+        is_favorite = user.favorite_movies.filter(id=id).exists()
+        is_watchlist = user.watch_list.filter(id=id).exists()
+
     return render(request, 'IMDbyx/movie_details.html', {
         'movie': serializer.data,
-        'year': year
+        'year': year,
+        'is_favorite': is_favorite,
+        'is_watchlist': is_watchlist
     })
 
 @api_view(['GET'])
@@ -240,8 +250,11 @@ def add_to_favorites(request, id):
     else:
         user.favorite_movies.add(movie)
         messages.success(request, ('Movie added to favorites!'))
+    
+    if user.watch_list.filter(id=id).exists():
+        return remove_watchlist(request, id)
 
-    return redirect('list-movies')
+    return redirect('movie-details', id=id)
 
 @login_required
 def view_favorites(request):
@@ -249,6 +262,53 @@ def view_favorites(request):
     
     movies = user.favorite_movies.all()
 
+    sentence = f"{user.name}'s Favorite Movies"
+
     return render(request, 'IMDbyx/favorite_movies.html', {
-        'movies': movies
+        'movies': movies,
+        'sentence': sentence
     })
+
+@login_required
+def remove_favorites(request, id):
+    user = request.user
+    movie = get_object_or_404(Movie, id=id)
+    user.favorite_movies.remove(movie)
+
+    messages.success(request, ('Movie removed from favorites.'))
+    return redirect('movie-details', id=id)
+
+@login_required
+def add_to_watchlist(request, id):
+    movie = get_object_or_404(Movie, id=id)
+    user = request.user
+
+    if user.watch_list.filter(id = id).exists():
+        messages.success(request, ('This movie has already been added to your WatchList!'))
+    else:
+        user.watch_list.add(movie)
+        messages.success(request, ('Movie added to WatchList!'))
+
+    return redirect('movie-details', id=id)
+
+@login_required
+def view_watchlist(request):
+    user = request.user
+    
+    movies = user.watch_list.all()
+
+    sentence = f"{user.name}'s Watchlist"
+
+    return render(request, 'IMDbyx/favorite_movies.html', {
+        'movies': movies,
+        'sentence': sentence
+    })
+
+@login_required
+def remove_watchlist(request, id):
+    user = request.user
+    movie = get_object_or_404(Movie, id=id)
+    user.watch_list.remove(movie)
+
+    messages.success(request, ('Movie removed from WatchList.'))
+    return redirect('movie-details', id=id)

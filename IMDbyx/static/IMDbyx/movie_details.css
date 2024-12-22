@@ -33,3 +33,47 @@ img {
     border-radius: 10px;
     padding: 2rem;
 }
+
+.all-info .pink-box h1 {
+    border: 3px solid #ee5de5; /* Borda rosa de 2px */
+    padding: 10px; /* Adiciona espaçamento interno */
+    border-radius: 5px; /* Borda arredondada (opcional) */
+    display: inline-block;
+    font-size: 30px;
+    margin-top: 0;
+  }
+
+  .add-to-favorites a{
+    text-decoration: none;
+  }
+
+  .add-to-favorites button {
+    color: black; /* Cor do texto */
+    font-size: 15px; /* Tamanho da fonte */
+    padding:8px 12px; /* Espaçamento interno (topo/baixo e esquerda/direita) */
+    border-radius: 12px; /* Borda arredondada */
+    border: none; /* Remove a borda padrão */
+    cursor: pointer; /* Muda o cursor para mão ao passar o mouse sobre o botão */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Animações suaves */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave */
+    margin-bottom: 1%;
+    /* margin-left: auto; /* Alinha o botão à esquerda */
+    /* margin-right: auto; Alinha o botão à direita */ 
+  }
+  
+  /* Efeito quando o botão é clicado */
+  .add-to-favorites button:active {
+    transform: scale(0.98); /* Efeito de "diminuir" o botão quando pressionado */
+  }
+  
+  /* Efeito quando o botão é focado ou quando o mouse passa por cima */
+  .add-to-favorites button:hover {
+    background-color: #ee5de5; /* Cor de fundo do botão em hover */
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2); /* Sombra mais forte quando o botão é hover */
+    color:white;
+  }
+
+  .messages {
+   position: relative;
+   top: 18%;
+  }

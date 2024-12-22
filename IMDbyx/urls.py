@@ -11,6 +11,9 @@ urlpatterns = [
     path('genre', views.filter_genre, name='filter-genre'),
     path('search', views.search_movies, name='search-movies'),
     path('add-to-favorites/<id>', views.add_to_favorites, name='add-to-favorites'),
-    path('view-favorites', views.view_favorites, name='view-favorites')
-    # path('<movie>', views.movie_detail, name='movie-detail'),
+    path('view-favorites', views.view_favorites, name='view-favorites'),
+    path('remove-from-favorites/<id>', views.remove_favorites, name='remove-from-favorites'),
+    path('add-to-watchlist/<id>', views.add_to_watchlist, name='add-to-watchlist'),
+    path('view-watchlist', views.view_watchlist, name='view-watchlist'),
+    path('remove-from-watchlist/<id>', views.remove_watchlist, name='remove-from-watchlist')
 ]

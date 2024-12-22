@@ -10,10 +10,38 @@
 {% block content %}
     {% include 'IMDbyx/includes/header.html' %}
     <section class='all-info'>
-        <h1>{{movie.title}} ({{ year }})</h1>
-        <a href="{% url 'add-to-favorites' movie.id %}">
-            <button>Add to Favorites</button>
-         </a>
+        <div class='messages'>
+            {% if messages %}
+                {% for message in messages %}
+                    <h1>{{message}}</h1>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class='pink-box'>
+            <h1>{{movie.title}} ({{ year }})</h1>
+        </div>
+
+        <div class='add-to-favorites'>
+           {% if not is_favorite %}
+                <a href="{% url 'add-to-favorites' movie.id %}">
+                    <button>Add to Favorites</button>
+                </a>
+                {% if not is_watchlist %}
+                    <a href="{% url 'add-to-watchlist' movie.id %}">
+                        <button>Add to Watchlist</button>
+                    </a>
+                {% else %}
+                    <a href="{% url 'remove-from-watchlist' movie.id %}">
+                        <button>Remove from WatchList</button>
+                    </a>
+                {% endif %}
+             {% else %}
+                <a href="{% url 'remove-from-favorites' movie.id %}">
+                    <button>Remove from Favorites</button>
+                </a>
+             {% endif %}
+        </div>
         
         <img src="https://image.tmdb.org/t/p/w1280{{movie.image_backdrop}}" alt="{{movie.title}}">
         
