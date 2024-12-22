@@ -1,0 +1,28 @@
+.actor-details {
+    margin: 5rem auto;
+    width: 90%;
+    max-width: 100rem;
+}
+
+.actor-name h1 {
+    border: 3px solid #ee5de5; /* Borda rosa de 2px */
+    padding: 10px; /* Adiciona espaçamento interno */
+    border-radius: 5px; /* Borda arredondada (opcional) */
+    display: inline-block;
+    font-size: 30px;
+    margin-top: 0;
+}
+
+.actor-img {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.actor-info {
+    margin-bottom: 50px;
+}
+
+.actor-details h2 {
+    margin-bottom: 50px;
+}

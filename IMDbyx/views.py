@@ -9,7 +9,6 @@ from .serializer import GenreSerializer, MovieSerializer, ActorSerializer, Movie
 from rest_framework.pagination import PageNumberPagination
 from django.contrib import messages
 import urllib3
-from django.http import Http404
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 # Create your views here.
@@ -333,3 +332,16 @@ def remove_watchlist(request, id):
 
     messages.success(request, ('Movie removed from WatchList.'))
     return redirect('movie-details', id=id)
+
+@api_view(['GET'])
+def actor_details(request, id):
+    actor = get_object_or_404(Actor, id=id)
+    actor_serializer = ActorSerializer(actor)
+
+    movies = actor.movies.all()
+    serializer = MovieSerializer(movies, many=True)
+
+    return render(request, 'IMDbyx/actor_details.html', {
+        'actor': actor_serializer.data,
+        'movies': serializer.data
+    })

@@ -21,17 +21,17 @@ ul {
     overflow: hidden; 
   } */
 
-  img {
+  .poster-filme img {
     width: 13rem;
     height: auto;
     transition: all 0.2s ease;
     /* object-fit: cover; */
   }
 
-  img:hover, img:active {
+  .poster-filme img:hover, img:active {
     transform: scale(1.1);
-    filter: grayscale(50%);
-    opacity: 20%;
+    filter: grayscale(60%);
+    opacity: 40%;
   }
 
   .custom-checkbox {

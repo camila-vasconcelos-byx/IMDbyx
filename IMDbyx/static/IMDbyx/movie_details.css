@@ -83,3 +83,13 @@ img {
     gap: 20px;
     margin-bottom: 1%;
   }
+
+  .cast-info a {
+    text-decoration: none;
+    color: white;
+    transition: all 0.2s ease;
+  }
+
+  .cast-info a:hover {
+    transform: scale(1.1);
+  }

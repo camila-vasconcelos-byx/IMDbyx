@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title%}Actor Details{% endblock %}
+
+{% block css_files %}
+<link rel="stylesheet" href="{% static 'IMDbyx/index.css' %}?v=123">
+<link rel="stylesheet" href="{% static 'IMDbyx/actor_details.css' %}?v=123">
+{% endblock %}
+
+{% block content %}
+{% include 'IMDbyx/includes/header.html' %}
+    <div class='actor-details'>
+        <div class='actor-info'>
+            <div class='actor-name'>
+                <h1>{{actor.name}}</h1>
+           </div>
+
+           <div class='actor-img'>
+               <img src="https://image.tmdb.org/t/p/h632{{actor.image_path}}" alt="">
+           </div>
+        </div>
+    
+        <h2>Movies</h2>
+        <ul>
+            {% for movie in movies%}
+            <li>
+                {% include 'IMDbyx/includes/movie_preview.html'%}
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+{% endblock %}
