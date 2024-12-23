@@ -73,7 +73,7 @@ def get_api_info(request):
 
     url = 'https://api.themoviedb.org/3/discover/movie'
 
-    for i in range(1, 501):
+    for i in range(1, 301):
         print(i)
         params = {
                 "api_key": api_key,
@@ -92,6 +92,8 @@ def get_api_info(request):
             release_date = movie['release_date']
             genre_ids = movie['genre_ids']
             genres = Genre.objects.filter(id__in=genre_ids)
+            popularity = movie['popularity']
+            vote = movie['vote_average']
 
             try:
                 filme, _ = Movie.objects.update_or_create(
@@ -102,6 +104,8 @@ def get_api_info(request):
                         'release_date': release_date,
                         'image_poster': url_poster,
                         'image_backdrop': url_backdrop,
+                        'popularity': popularity,
+                        'vote': vote
                     }
                 )
 
@@ -116,7 +120,7 @@ def get_api_info(request):
 
 @api_view(['GET'])
 def list_movies(request):
-    movies = Movie.objects.all()
+    movies = Movie.objects.all().order_by('-popularity')
     paginator = PageNumberPagination()
     paginator.page_size = 24
     result = paginator.paginate_queryset(movies, request)
@@ -193,7 +197,7 @@ def filter_genre(request):
     year = request.GET.get('year')
     actor = request.GET.get('actor')
     
-    movies = Movie.objects.all()
+    movies = Movie.objects.all().order_by('-popularity')
     selected_genres = ''
 
     if genres and genres != ['']:
@@ -233,7 +237,7 @@ def search_movies(request):
         messages.success(request, ('You must type a movie title.'))
         return redirect('list-movies')
     
-    movies = Movie.objects.filter(title__contains=movie_name)
+    movies = Movie.objects.filter(title__contains=movie_name).order_by('-popularity')
 
     if len(movies) == 0:
         messages.success(request, (f'No movie matches the search "{movie_name}".'))

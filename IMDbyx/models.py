@@ -21,6 +21,8 @@ class Movie(models.Model):
     image_backdrop = models.CharField(max_length=255)
     actors = models.ManyToManyField(Actor, related_name='movies', through='Movie_Actor')
     genres = models.ManyToManyField(Genre, related_name='genres')
+    popularity = models.FloatField(null=True)
+    vote = models.FloatField(null=True)
 
 class Movie_Actor(models.Model):
     id_movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
@@ -55,6 +57,7 @@ class CustomUser(AbstractUser):
     username = models.CharField(max_length=150, null=True)
     favorite_movies = models.ManyToManyField(Movie, related_name='favorite_movies')
     watch_list = models.ManyToManyField(Movie, related_name='watch_list')
+    watched_movies = models.ManyToManyField(Movie, related_name='watched_movies')
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['name']
