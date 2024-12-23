@@ -309,9 +309,13 @@ def view_favorites(request):
 def remove_favorites(request, id):
     user = request.user
     movie = get_object_or_404(Movie, id=id)
-    user.favorite_movies.remove(movie)
 
-    messages.success(request, ('Movie removed from favorites.'))
+    if user.favorite_movies.filter(id=id).exists():
+        user.favorite_movies.remove(movie)
+        messages.success(request, ('Movie removed from favorites.'))
+    else:
+        messages.success(request, ('Movie not in favorites.'))
+
     return redirect('movie-details', id=id)
 
 @login_required

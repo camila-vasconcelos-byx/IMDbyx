@@ -1,6 +1,6 @@
 from django.test import TestCase
-from ..models import Genre, Movie
-from ..serializer import MovieSerializer
+from ..models import Genre, Movie, Actor, Movie_Actor
+from ..serializer import MovieSerializer, ActorSerializer
 from django.urls import reverse
 from django.contrib.messages import get_messages
 from django.contrib.auth import get_user_model
@@ -40,6 +40,18 @@ class ViewsTesteCase(TestCase):
         )
 
         user.favorite_movies.add(movie2)
+
+        actor1 = Actor.objects.create(id=1, name="Leonardo DiCaprio")
+        actor2 = Actor.objects.create(id=2, name="Joseph Gordon-Levitt")
+        actor3 = Actor.objects.create(id=3, name="Matthew McConaughey")
+        actor4 = Actor.objects.create(id=4, name="Anne Hathaway")
+
+        Movie_Actor.objects.create(id_actor=actor1, id_movie=movie1, character="Cobb")
+        Movie_Actor.objects.create(id_actor=actor2, id_movie=movie1, character="Arthur")
+
+        Movie_Actor.objects.create(id_actor=actor3, id_movie=movie2, character="Cooper")
+        Movie_Actor.objects.create(id_actor=actor4, id_movie=movie2, character="Brand")
+
 
     def test_list_movies_200_response(self):
         response = self.client.get(reverse('list-movies'))
@@ -93,7 +105,7 @@ class ViewsTesteCase(TestCase):
 
         messages = list(get_messages(response.wsgi_request))
 
-        self.assertEqual(str(messages[0]), 'No movies match the genre id specified.')
+        self.assertEqual(str(messages[0]), 'No movies match the filter specified.')
         self.assertRedirects(response, reverse('list-movies'))
 
     def test_filter_genres_no_match(self):
@@ -103,7 +115,7 @@ class ViewsTesteCase(TestCase):
 
         messages = list(get_messages(response.wsgi_request))
 
-        self.assertEqual(str(messages[0]), 'No movies match the genre id specified.')
+        self.assertEqual(str(messages[0]), 'No movies match the filter specified.')
         self.assertRedirects(response, reverse('list-movies'))
 
     def test_search_movie_200_response(self):
@@ -193,8 +205,114 @@ class ViewsTesteCase(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, url)
 
+    def test_remove_from_favorites_not_logged_in(self):
+        response = self.client.get(reverse('remove-from-favorites', kwargs={'id': 1}))
 
+        url =  f"{reverse('user-login')}?next={reverse('remove-from-favorites', kwargs={'id':1})}"
 
-        
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, url)
 
+    def test_remove_from_favorites_logged_in(self):
+        self.client.login(email='camila@gmail.com', password='senha')
+        response = self.client.get(reverse('remove-from-favorites', kwargs={'id':2}))
+        user = response.wsgi_request.user
 
+        self.assertEqual(response.status_code, 302)
+
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(str(messages[0]), 'Movie removed from favorites.')
+
+        self.assertNotIn(Movie.objects.get(id=2), user.favorite_movies.all())
+
+    def test_remove_from_favorites_invalid_id(self):
+        self.client.login(email='camila@gmail.com', password='senha')
+        response = self.client.get(reverse('remove-from-favorites', kwargs={'id':1}))
+
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(str(messages[0]), 'Movie not in favorites.')
+
+        self.assertEqual(response.status_code, 302)
+
+    def test_remove_from_favorites_unexisting_id(self):
+        self.client.login(email='camila@gmail.com', password='senha')
+        response = self.client.get(reverse('remove-from-favorites', kwargs={'id':3}))
+
+        self.assertEqual(response.status_code, 404)
+
+    def test_list_actors_200_response(self):
+        response = self.client.get(reverse('list-actors'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_list_actors_template(self):
+        response = self.client.get(reverse('list-actors'))
+        self.assertTemplateUsed(response, 'IMDbyx/list_actors.html')
+
+    def test_list_actors(self):
+        response = self.client.get(reverse('list-actors'))
+        response_actors = response.context['actors']
+
+        actors = Actor.objects.all()
+        serializer = ActorSerializer(actors, many=True)
+
+        self.assertEqual(response_actors, serializer.data)
+
+    def test_actor_details_200_response(self):
+        response = self.client.get(reverse('actor-details', kwargs={'id': 1}))
+        self.assertEqual(response.status_code, 200)
+
+    def test_actor_details_template(self):
+        response = self.client.get(reverse('actor-details', kwargs={'id': 1}))
+        self.assertTemplateUsed(response, 'IMDbyx/actor_details.html')
+
+    def test_actor_details_correct(self):
+        response = self.client.get(reverse('actor-details', kwargs={'id': 1}))
+        response_actor = response.context['actor']
+
+        actor = Actor.objects.get(id=1)
+        serializer = ActorSerializer(actor)
+
+        self.assertEqual(response_actor, serializer.data)
+
+    def test_actor_details_invalid(self):
+        response = self.client.get(reverse('actor-details', kwargs={'id': 10}))
+        self.assertEqual(response.status_code, 404)
+
+    def test_search_actors_200_response(self):
+        response = self.client.get(reverse('search-actors') + '?actor= Leonardo ')
+        self.assertEqual(response.status_code, 200)
+
+    def test_search_actors_template(self):
+        response = self.client.get(reverse('search-actors') + '?actor= Leonardo ')
+        self.assertTemplateUsed(response, 'IMDbyx/list_actors.html')
+
+    def test_search_actors_found(self):
+        response = self.client.get(reverse('search-actors') + '?actor= Le ')
+        response_actors = response.context['actors']
+
+        actors = Actor.objects.filter(name__icontains='Le')
+        serializer = ActorSerializer(actors, many=True)
+
+        self.assertEqual(response_actors, serializer.data)
+        self.assertEqual(response.status_code, 200)
+
+        messages = list(get_messages(response.wsgi_request))
+        message = '2 results were found for the search "Le"!'
+
+        self.assertEqual(str(messages[0]), message)
+
+    def test_search_actors_no_param(self):
+        response = self.client.get(reverse('search-actors'))
+
+        self.assertEqual(response.status_code, 302)
+
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(str(messages[0]), 'You must type an actor name.')
+
+    def test_search_actors_not_found(self):
+        response = self.client.get(reverse('search-actors') + '?actor= Meryl Streep ')
+
+        self.assertEqual(response.status_code, 302)
+
+        messages = list(get_messages(response.wsgi_request))
+        self.assertEqual(str(messages[0]), 'No actor matches the search "Meryl Streep".')
