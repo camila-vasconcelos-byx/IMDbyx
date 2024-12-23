@@ -21,36 +21,54 @@
         <div class='pink-box'>
             <h1>{{movie.title}} ({{ year }})</h1>
         </div>
-
+        
         <div class='add-to-favorites'>
-           {% if not is_favorite %}
-                <a href="{% url 'add-to-favorites' movie.id %}">
-                    <button>Add to Favorites</button>
-                </a>
-                {% if not is_watchlist %}
-                    <a href="{% url 'add-to-watchlist' movie.id %}">
-                        <button>Add to Watchlist</button>
-                    </a>
-                {% else %}
-                    <a href="{% url 'remove-from-watchlist' movie.id %}">
-                        <button>Remove from WatchList</button>
-                    </a>
-                {% endif %}
-             {% else %}
-                <a href="{% url 'remove-from-favorites' movie.id %}">
-                    <button>Remove from Favorites</button>
-                </a>
-             {% endif %}
+            {% if not is_favorite %}
+            <a href="{% url 'add-to-favorites' movie.id %}">
+                <button>Add to Favorites</button>
+            </a>
+            {% else %}
+            <a href="{% url 'remove-from-favorites' movie.id %}">
+                <button>Remove from Favorites</button>
+            </a>
+            {% endif %}
+            {% if not is_watched %}
+            <a href="{% url 'add-to-watched' movie.id %}">
+                <button>Add to Watched</button>
+            </a>
+            {% else %}
+            <a href="{% url 'remove-from-watched' movie.id %}">
+                <button>Remove from Watched</button>
+            </a>
+            {% endif %}
+
+            {% if not is_watchlist and not is_watched %}
+            <a href="{% url 'add-to-watchlist' movie.id %}">
+                <button>Add to Watchlist</button>
+            </a>
+            {% elif is_watchlist and not is_watched %}
+            <a href="{% url 'remove-from-watchlist' movie.id %}">
+                <button>Remove from WatchList</button>
+            </a>
+            {% endif %}
         </div>
         
         <img src="https://image.tmdb.org/t/p/w1280{{movie.image_backdrop}}" alt="{{movie.title}}">
         
-                <div class='overview'>
-                    <h2>Overview</h2>
-                    <p>{{movie.overview}}</p>
-                </div>
+        <div class='overview'>
+            <h2>Overview</h2>
+            <p>{{movie.overview}}</p>
+        </div>
         
         <div class='genre-info'>
+            <h2>Popularity</h2>
+           <ul>
+            <li>{{movie.popularity}}</li>
+           </ul>
+            <h2>Vote Average</h2>
+            <ul>
+                <li>{{movie.vote}}</li>
+            </ul>
             <h2>Genres</h2>
             <ul>
              {% for genre in movie.genres %}

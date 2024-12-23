@@ -19,4 +19,7 @@ urlpatterns = [
     path('actor-details/<id>', views.actor_details, name='actor-details'),
     path('search-actors', views.search_actors, name='search-actors'),
     path('set-choice/<str:choice>', views.set_page_choice, name='set-choice'),
+     path('add-to-watched/<id>', views.add_to_watched, name='add-to-watched'),
+    path('view-watched', views.view_watched, name='view-watched'),
+    path('remove-from-watched/<id>', views.remove_watched, name='remove-from-watched'),
 ]

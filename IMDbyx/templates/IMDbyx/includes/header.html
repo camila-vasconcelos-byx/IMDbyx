@@ -35,6 +35,7 @@
         <div class='user-info'>
             {% if user.is_authenticated %}
             <a href="{% url 'view-favorites' %}">Favorites</a>
+            <a href="{% url 'view-watched' %}">Watched</a>
             <a href="{% url 'view-watchlist' %}">Watchlist</a>
             {% endif %}
 
@@ -44,8 +45,10 @@
             <h2>Welcome, {{user.name}} </h2>
             <a href="{% url 'logout-user' %}">Logout</a>
             {% else %}
-            <a href="{% url 'user-login' %}">Login</a>
-            <a href="{% url 'create-user' %}">Create Account</a>
+            <div class='login-area'>
+                <a href="{% url 'user-login' %}">Login</a>
+                <a href="{% url 'create-user' %}">Create Account</a>
+            </div>
             {% endif %}
         </div>
     </nav>

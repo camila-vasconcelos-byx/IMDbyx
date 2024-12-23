@@ -92,3 +92,8 @@
     display: flex;
     gap: 20px;
 }
+
+.login-area {
+    display: flex;
+    gap: 20px;
+}

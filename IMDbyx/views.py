@@ -122,7 +122,7 @@ def get_api_info(request):
 def list_movies(request):
     movies = Movie.objects.all().order_by('-popularity')
     paginator = PageNumberPagination()
-    paginator.page_size = 24
+    paginator.page_size = 30
     result = paginator.paginate_queryset(movies, request)
     serializer = MovieSerializer(result, many=True)
 
@@ -144,7 +144,7 @@ def list_actors(request):
     actors = Actor.objects.all()
 
     paginator = PageNumberPagination()
-    paginator.page_size = 24
+    paginator.page_size = 30
     result = paginator.paginate_queryset(actors, request)
     serializer = ActorSerializer(result, many=True)
 
@@ -178,16 +178,19 @@ def info_movie(request, id):
     user = request.user
     is_favorite = False
     is_watchlist = False
+    is_watched = False
 
     if user.is_authenticated:
         is_favorite = user.favorite_movies.filter(id=id).exists()
         is_watchlist = user.watch_list.filter(id=id).exists()
+        is_watched = user.watched_movies.filter(id=id).exists()
 
     return render(request, 'IMDbyx/movie_details.html', {
         'movie': serializer.data,
         'year': year,
         'is_favorite': is_favorite,
-        'is_watchlist': is_watchlist
+        'is_watchlist': is_watchlist,
+        'is_watched': is_watched,
     })
 
 @api_view(['GET'])
@@ -215,7 +218,7 @@ def filter_genre(request):
         return redirect('list-movies')
            
     paginator = PageNumberPagination()
-    paginator.page_size = 24
+    paginator.page_size = 30
     result = paginator.paginate_queryset(movies, request)
     serializer = MovieSerializer(result, many=True)
 
@@ -246,7 +249,7 @@ def search_movies(request):
         messages.success(request, (f'{len(movies)} results were found for the search "{movie_name}"!'))
 
     paginator = PageNumberPagination()
-    paginator.page_size = 24
+    paginator.page_size = 30
     result = paginator.paginate_queryset(movies, request)
     serializer = MovieSerializer(result, many=True)
 
@@ -270,8 +273,13 @@ def add_to_favorites(request, id):
         user.favorite_movies.add(movie)
         messages.success(request, ('Movie added to favorites!'))
     
+    if not user.watched_movies.filter(id=id).exists():
+        user.watched_movies.add(movie)
+        messages.success(request, ('Movie added to Watched Movies!'))
+
     if user.watch_list.filter(id=id).exists():
-        return remove_watchlist(request, id)
+        user.watch_list.remove(movie)
+        messages.success(request, ('Movie removed from WatchList.'))
 
     return redirect('movie-details', id=id)
 
@@ -283,7 +291,7 @@ def view_favorites(request):
     movies = user.favorite_movies.all()
 
     paginator = PageNumberPagination()
-    paginator.page_size = 24
+    paginator.page_size = 30
     result = paginator.paginate_queryset(movies, request)
     serializer = MovieSerializer(result, many=True)
 
@@ -318,6 +326,9 @@ def add_to_watchlist(request, id):
         user.watch_list.add(movie)
         messages.success(request, ('Movie added to WatchList!'))
 
+    if user.watched_movies.filter(id=id).exists():
+        remove_watched_logic(request, movie)
+
     return redirect('movie-details', id=id)
 
 @login_required
@@ -328,7 +339,7 @@ def view_watchlist(request):
     movies = user.watch_list.all()
 
     paginator = PageNumberPagination()
-    paginator.page_size = 24
+    paginator.page_size = 30
     result = paginator.paginate_queryset(movies, request)
     serializer = MovieSerializer(result, many=True)
 
@@ -381,7 +392,7 @@ def search_actors(request):
         messages.success(request, (f'{len(actors)} results were found for the search "{actor_name}"!'))
 
     paginator = PageNumberPagination()
-    paginator.page_size = 24
+    paginator.page_size = 30
     result = paginator.paginate_queryset(actors, request)
     serializer = ActorSerializer(result, many=True)
 
@@ -398,3 +409,68 @@ def set_page_choice(request, choice):
     if choice == 'actors':
         return redirect('list-actors')
     return redirect('list-movies')
+
+@login_required
+@api_view(['POST', 'GET'])
+def add_to_watched(request, id):
+    movie = get_object_or_404(Movie, id=id)
+    user = request.user
+
+    if user.watched_movies.filter(id = id).exists():
+        messages.success(request, ('This movie has already been added to your Watched Movies!'))
+    else:
+        user.watched_movies.add(movie)
+        messages.success(request, ('Movie added to Watched Movies!'))
+
+    if user.watch_list.filter(id=id).exists():
+        user.watch_list.remove(movie)
+        messages.success(request, ('Movie removed from WatchList.'))
+
+    return redirect('movie-details', id=id)
+
+@login_required
+@api_view(['GET'])
+def view_watched(request):
+    user = request.user
+    
+    movies = user.watched_movies.all()
+
+    paginator = PageNumberPagination()
+    paginator.page_size = 30
+    result = paginator.paginate_queryset(movies, request)
+    serializer = MovieSerializer(result, many=True)
+
+    sentence = f"{user.name}'s Watched Movies"
+
+    return render(request, 'IMDbyx/favorite_movies.html', {
+            'movies': serializer.data,
+            'sentence': sentence,
+            'page': paginator.page.number,
+            'total_pages': paginator.page.paginator.num_pages,
+        })
+
+@login_required
+@api_view(['POST', 'GET'])
+def remove_watched(request, id):
+    user = request.user
+    movie = get_object_or_404(Movie, id=id)
+    user.watched_movies.remove(movie)
+
+    messages.success(request, ('Movie removed from Watched Movies.'))
+
+    if user.favorite_movies.filter(id=id).exists():
+        user.favorite_movies.remove(movie)
+        messages.success(request, ('Movie removed from favorites.'))
+
+    
+    return redirect('movie-details', id=id)
+
+def remove_watched_logic(request, movie):
+    user = request.user
+    user.watched_movies.remove(movie)
+
+    messages.success(request, ('Movie removed from Watched Movies.'))
+
+    if user.favorite_movies.filter(id=id).exists():
+        user.favorite_movies.remove(movie)
+        messages.success(request, ('Movie removed from favorites.'))
