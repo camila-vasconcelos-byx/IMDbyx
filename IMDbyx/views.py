@@ -73,7 +73,7 @@ def get_api_info(request):
 
     url = 'https://api.themoviedb.org/3/discover/movie'
 
-    for i in range(1, 100):
+    for i in range(1, 501):
         print(i)
         params = {
                 "api_key": api_key,
@@ -205,7 +205,7 @@ def filter_genre(request):
         movies = movies.filter(actors__name__icontains=actor)
 
     if not len(movies):
-        messages.success(request, ('No movies match the genre id specified.'))
+        messages.success(request, ('No movies match the filter specified.'))
         return redirect('list-movies')
            
     paginator = PageNumberPagination()
