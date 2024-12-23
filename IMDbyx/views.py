@@ -194,8 +194,10 @@ def filter_genre(request):
     actor = request.GET.get('actor')
     
     movies = Movie.objects.all()
+    selected_genres = ''
 
-    if genres:
+    if genres and genres != ['']:
+        selected_genres = [int(id) for id in genres]
         for genre in genres:
             movies = movies.filter(genres__id = genre)
     if year:
@@ -217,7 +219,7 @@ def filter_genre(request):
         'movies': serializer.data,
         'search': False,
         'genres': GenreSerializer(Genre.objects.all(), many=True).data,
-        'selected_genres': [int(id) for id in genres],
+        'selected_genres': selected_genres,
         'status': status.HTTP_200_OK,
         'page': paginator.page.number,
         'total_pages': paginator.page.paginator.num_pages,
@@ -253,6 +255,7 @@ def search_movies(request):
     })
 
 @login_required
+@api_view(['POST', 'GET'])
 def add_to_favorites(request, id):
     movie = get_object_or_404(Movie, id=id) 
     user = request.user
@@ -290,6 +293,7 @@ def view_favorites(request):
     })
 
 @login_required
+@api_view(['POST', 'GET'])
 def remove_favorites(request, id):
     user = request.user
     movie = get_object_or_404(Movie, id=id)
@@ -299,6 +303,7 @@ def remove_favorites(request, id):
     return redirect('movie-details', id=id)
 
 @login_required
+@api_view(['POST', 'GET'])
 def add_to_watchlist(request, id):
     movie = get_object_or_404(Movie, id=id)
     user = request.user
@@ -333,6 +338,7 @@ def view_watchlist(request):
         })
 
 @login_required
+@api_view(['POST', 'GET'])
 def remove_watchlist(request, id):
     user = request.user
     movie = get_object_or_404(Movie, id=id)
